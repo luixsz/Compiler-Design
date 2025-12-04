@@ -1,5 +1,5 @@
 '''
-Louielee Own Compiler (.loc)
+Compiler Module for Michaela A De Guzman (MAD)
 '''
 
 
@@ -121,9 +121,11 @@ while ip < len(program):
          out.write(f"\tPOP rax\n")
          out.write(f"\tADD qword [rsp], rax\n")
     elif opcode == "SUB":
-         out.write(f"; -- SUB ---\n")
-         out.write(f"\tPOP rax\n")
-         out.write(f"\tSUB qword [rsp], rax\n")
+        out.write("; -- SUB --\n")
+        out.write("\tPOP rax          ; rax = b\n")
+        out.write("\tPOP rbx          ; rbx = a\n")
+        out.write("\tSUB rbx, rax     ; rbx = a - b\n")
+        out.write("\tPUSH rbx         ; push (a - b)\n")
     elif opcode == "PRINT":
         string_literal_index = program[ip]
         ip += 1
@@ -139,15 +141,17 @@ while ip < len(program):
         out.write(f"\tLEA rdx, read_number\n")
         out.write(f"\tXOR eax, eax\n")
         out.write(f"\tCALL scanf\n")
-        out.write(f"\tPUSH qword, [read_number]\n") 
+        out.write(f"\tPUSH qword [read_number]\n") 
 
     elif opcode == "JUMP.EQ.0":
         label = program[ip]
-        ip += 1 
+        ip += 1
 
-        out.write(f"; -- JUMP.EQ.0 ---\n")
-        out.write(f"\tCMP qword [rsp], 0\n")
+        out.write("; -- JUMP.EQ.0 ---\n")
+        out.write("\tPOP rax          ; get value from top of stack\n")
+        out.write("\tCMP rax, 0       ; compare it to 0\n")
         out.write(f"\tJE {label}\n")
+
     elif opcode == "JUMP.GT.0":
         label = program[ip]
         ip += 1
